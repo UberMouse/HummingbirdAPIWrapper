@@ -14,36 +14,30 @@ import spray.client.pipelining._
 import spray.util._
 import HummingbirdProtocol._
 import java.net.URLEncoder
-import scala.concurrent.Await
+import scala.concurrent.{Future, Await}
 import akka.util.Timeout
 
 class HummingbirdHttpInteractions extends HttpInteractions {
   implicit val system = ActorSystem("simple-spray-client")
   import system.dispatcher // execution context for futures below
 
-  def search(title: String): Iterable[SearchResult] = {
+  def search(title: String): Future[Iterable[SearchResult]] = {
     val cleanTitle = URLEncoder.encode(title, "UTF-8")
     val pipeline = sendReceive ~> unmarshal[SearchResults]
 
-    val responseFuture = pipeline {
+    pipeline {
       Get(s"http://hummingbird.me/search.json?query=$cleanTitle&type=mixed")
-    }
-
-    val results = Await.result(responseFuture, 5 seconds)
-    results.search
+    }.map(_.search)
   }
 
-  def lookup(slug: String): HummingbirdEntry = findBySlugOrId(slug)
+  def lookup(slug: String): Future[HummingbirdEntry] = findBySlugOrId(slug)
 
-  def lookup(id: Int): HummingbirdEntry = findBySlugOrId(id.toString)
+  def lookup(id: Int): Future[HummingbirdEntry] = findBySlugOrId(id.toString)
 
-  private def findBySlugOrId(identifier: String): HummingbirdEntry = {
+  private def findBySlugOrId(identifier: String): Future[HummingbirdEntry] = {
     val pipeline = sendReceive ~> unmarshal[Anime]
-
-    val responseFuture = pipeline {
+    pipeline {
       Get(s"http://hummingbird.me/api/v2/anime/$identifier")
     }
-
-    Await.result(responseFuture, 5 seconds)
   }
 }

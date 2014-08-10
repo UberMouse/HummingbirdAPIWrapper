@@ -1,6 +1,8 @@
 import nz.ubermouse.hummingbird._
 import nz.ubermouse.hummingbird.AnimeResult
 import nz.ubermouse.hummingbird.MangaResult
+import scala.concurrent.Await
+import scala.concurrent.duration._
 
 class HummingbirdHttpInteractionsSpec extends UnitSpec {
 
@@ -18,7 +20,7 @@ class HummingbirdHttpInteractionsSpec extends UnitSpec {
       val results = interactions.search("Kare Kano")
 
 
-      results should be (expected)
+      Await.result(results, 5 seconds) should be (expected)
     }
   }
 
@@ -49,7 +51,7 @@ class HummingbirdHttpInteractionsSpec extends UnitSpec {
 
          val entry = interactions.lookup("noragami")
 
-         entry should be (expected)
+         Await.result(entry, 5 seconds) should be (expected)
        }
      }
   }
