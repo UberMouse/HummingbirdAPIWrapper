@@ -1,13 +1,11 @@
-import nz.ubermouse.hummingbird.{HummingbirdAnime, Hummingbird}
+import nz.ubermouse.hummingbird.{HummingbirdModule, Anime, Hummingbird}
 import scaldi.{Injectable, Module}
 
-class TestModule extends Module {
+class HummingbirdSpec extends UnitSpec {
 
-}
-
-class HummingbirdSpec extends UnitSpec with Injectable {
-
-  implicit val module = new TestModule
+  implicit val module = new Module {
+    bind[Hummingbird] to injected[Hummingbird]
+  } :: new HummingbirdModule
 
   "Describe Hummingbird API Wrapper" - {
     "It provides searching functionality" - {
@@ -16,7 +14,7 @@ class HummingbirdSpec extends UnitSpec with Injectable {
 
         val results = hummingbird.search("Gekkan Shojo Noziaki Kun")
 
-        results should be (List(HummingbirdAnime(name = "Gekkan Shojo Nozaki Kun", id = 1221)))
+        results.size should be (3)
       }
     }
   }
