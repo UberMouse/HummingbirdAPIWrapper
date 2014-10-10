@@ -1,6 +1,8 @@
 name := """hummingbird-wrapper"""
 
-version := "1.0"
+organization := "nz.ubermouse"
+
+version := "0.1-SNAPSHOT"
 
 scalaVersion := "2.11.1"
 

@@ -15,7 +15,7 @@ case class Anime(id: Int,
                  screencaps: List[String],
                  youtube_trailer_id: Option[String],
                  community_rating: Double,
-                 age_rating: String,
+                 age_rating: Option[String],
                  episode_count: Int,
                  episode_length: Int) extends HummingbirdEntry
 case class Manga() extends HummingbirdEntry

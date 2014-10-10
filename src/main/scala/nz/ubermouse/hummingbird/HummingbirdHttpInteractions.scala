@@ -24,7 +24,6 @@ class HummingbirdHttpInteractions extends HttpInteractions {
   def search(title: String): Future[Iterable[SearchResult]] = {
     val cleanTitle = URLEncoder.encode(title, "UTF-8")
     val pipeline = sendReceive ~> unmarshal[SearchResults]
-
     pipeline {
       Get(s"http://hummingbird.me/search.json?query=$cleanTitle&type=mixed")
     }.map(_.search)
